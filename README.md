@@ -1,52 +1,40 @@
-# HR Analytics – Job Change Analysis
+# 📊 HR Analytics - Turnover Analysis
 
-## 📊 Project Overview
+## 🎯 Objetivo
+Identificar fatores que influenciam o turnover de funcionários, utilizando técnicas de ETL, análise exploratória e estatística.
 
-This project analyzes HR data to understand factors related to **job change intentions among professionals**.
+## 📌 Problema de negócio
+O alto turnover pode gerar custos elevados para empresas. Este projeto busca entender quais variáveis estão associadas à saída de funcionários.
 
-The dataset includes information about candidates such as:
+## 🛠️ Tecnologias
+- Python
+- Pandas
+- Seaborn / Matplotlib
+- Scipy
 
-* professional experience
-* education level
-* training hours
-* company characteristics
-* city development index
+## 🔄 Etapas
+- Limpeza e tratamento de dados (ETL)
+- Tratamento de valores ausentes
+- Conversão de variáveis
+- Análise exploratória (EDA)
+- Correlação (Spearman)
+- WOE e IV
 
-The goal is to explore how these factors relate to the likelihood of a candidate **seeking a job change**.
+## 📊 Insights
+- Funcionários com menor experiência tendem a sair mais
+- Algumas variáveis categóricas apresentam poder preditivo relevante
+- Nem todas as variáveis impactam significativamente o turnover
 
----
+## ⚠️ Limitações (v1)
+- Código ainda não modularizado
+- Repetição de código em plots
+- Pipeline não estruturado
 
-## ⚙️ Current Status
+## 🚀 Próximos passos
+- Refatorar código em funções
+- Criar pipeline de dados
+- Evoluir para modelo preditivo
 
-Project currently includes:
-
-* Data loading
-* Initial data exploration
-* ETL steps performed in Jupyter Notebook
-* Exploratory Data Analysis (EDA)
-
-Upcoming steps:
-
-* Handling missing values
-* Final insights and conclusions
-* Dashboard development (Power BI / Kaggle)
-
----
-
-## 🛠 Technologies
-
-* Python
-* Pandas
-* NumPy
-* Matplotlib
-* Seaborn
-* Jupyter Notebook
-
----
-
-## 📈 Future Improvements
-
-* Complete missing data treatment
-* Generate final analytical insights
-* Build an interactive dashboard
-* Explore predictive models
+## 📁 Estrutura
+- notebook.ipynb
+- dataset.csv
