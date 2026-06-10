@@ -1,0 +1,7 @@
+variavel,iv,classificacao
+gender,0.0033368541061265774,Não usar para previsão
+major_discipline,0.004148266501347431,Não usar para previsão
+company_type,0.01777167651250217,Não usar para previsão
+education_level,0.05116980174634249,Preditor fraco
+relevent_experience,0.08352320772215559,Preditor fraco
+enrolled_university,0.11888554785198396,Preditor médio

@@ -88,6 +88,8 @@ Os resultados desta análise podem auxiliar equipes de RH a:
 * `ProjetoRH_v2.ipynb` → notebook principal (v2), usa os módulos de `src/`
 * `src/etl.py` → pipeline de ETL em funções reutilizáveis (carga, imputação por regras de negócio, gravação)
 * `src/eda.py` → funções de análise exploratória (plots, normalidade, Spearman, WOE/IV)
+* `src/exportar_bi.py` → exporta CSVs prontos para o dashboard de BI (`python -m src.exportar_bi`)
+* `dataset/bi/` → CSVs de apoio ao BI: tabela fato, taxa de evasão por categoria, WOE/IV e correlação
 * `ProjetoRH.ipynb` → notebook da v1 (mantido para referência)
 * `Dashboard_ProjetoRH.html` → dashboard interativo com os principais insights
 * `Features.txt` → descrição das variáveis do dataset

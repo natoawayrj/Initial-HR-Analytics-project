@@ -1,0 +1,27 @@
+variavel,categoria,total_candidatos,procurando_emprego,taxa_evasao
+enrolled_university,Full time course,3737,1421,0.3803
+enrolled_university,No enrollment,13778,2910,0.2112
+enrolled_university,Other,372,120,0.3226
+enrolled_university,Part time course,1197,302,0.2523
+enrolled_university,Primary Grad,9,1,0.1111
+relevent_experience,Has relevent experience,13748,2945,0.2142
+relevent_experience,No relevent experience,5345,1809,0.3384
+education_level,Graduate,11566,3230,0.2793
+education_level,High School,2013,394,0.1957
+education_level,Masters,4346,931,0.2142
+education_level,Other,450,101,0.2244
+education_level,Phd,411,58,0.1411
+education_level,Primary School,307,40,0.1303
+company_type,Early Stage Startup,601,141,0.2346
+company_type,Funded Startup,999,140,0.1401
+company_type,NGO,519,96,0.185
+company_type,Other,6225,2398,0.3852
+company_type,Public Sector,953,210,0.2204
+company_type,Pvt Ltd,9796,1769,0.1806
+major_discipline,Arts,252,53,0.2103
+major_discipline,Business Degree,326,85,0.2607
+major_discipline,Humanities,668,140,0.2096
+major_discipline,No Major,223,55,0.2466
+major_discipline,Non Degree,2770,535,0.1931
+major_discipline,Other,403,109,0.2705
+major_discipline,STEM,14451,3777,0.2614
