@@ -89,6 +89,8 @@ Os resultados desta análise podem auxiliar equipes de RH a:
 ## 📁 Estrutura do projeto
 
 * `ProjetoRH.ipynb` → notebook principal com ETL e análise
+* `Dashboard_ProjetoRH.html` → dashboard interativo com os principais insights
+* `Features.txt` → descrição das variáveis do dataset
 * `dataset/` → dados utilizados no projeto
 
 ---
