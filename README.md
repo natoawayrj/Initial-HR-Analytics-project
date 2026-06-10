@@ -1,6 +1,6 @@
 # 📊 HR Analytics - Turnover Analysis
 
-> ⚠️ Este projeto representa a versão inicial (v1) e será evoluído com melhorias estruturais e analíticas.
+> ✅ Versão atual: **v2** — código refatorado em módulos reutilizáveis, com pipeline de ETL separado da análise. O notebook da v1 foi mantido para referência histórica.
 
 ---
 
@@ -67,31 +67,31 @@ Os resultados desta análise podem auxiliar equipes de RH a:
 
 ---
 
-## ⚠️ Limitações da versão atual (v1)
+## ✨ O que mudou na v2
 
-* Código ainda não modularizado (funções)
-* Repetição em algumas análises e visualizações
-* ETL e EDA ainda não totalmente separados
-* Pipeline de dados ainda não estruturado
+* ✅ Código refatorado em funções reutilizáveis (`src/etl.py` e `src/eda.py`)
+* ✅ Pipeline de ETL separado da análise — uma única chamada (`etl.pipeline_etl`) executa toda a limpeza e grava o dataset limpo
+* ✅ Notebook reorganizado em seções claras: Carga → EDA → ETL → Verificação → Relatório
+* ✅ Correção de bug da v1: a imputação de `major_discipline` sobrescrevia linhas inteiras com `Other` em vez de apenas a coluna
 
 ---
 
-## 🚀 Próximos passos (v2)
+## 🚀 Próximos passos (v3)
 
-* Refatorar o código em funções reutilizáveis
-* Separar pipeline de ETL e análise
-* Melhorar organização do notebook
 * Aprofundar análise orientada a negócio
-* Evoluir para um modelo preditivo de turnover
+* Evoluir para um modelo preditivo de turnover (atenção ao desbalanceamento do target)
 
 ---
 
 ## 📁 Estrutura do projeto
 
-* `ProjetoRH.ipynb` → notebook principal com ETL e análise
+* `ProjetoRH_v2.ipynb` → notebook principal (v2), usa os módulos de `src/`
+* `src/etl.py` → pipeline de ETL em funções reutilizáveis (carga, imputação por regras de negócio, gravação)
+* `src/eda.py` → funções de análise exploratória (plots, normalidade, Spearman, WOE/IV)
+* `ProjetoRH.ipynb` → notebook da v1 (mantido para referência)
 * `Dashboard_ProjetoRH.html` → dashboard interativo com os principais insights
 * `Features.txt` → descrição das variáveis do dataset
-* `dataset/` → dados utilizados no projeto
+* `dataset/` → dados utilizados no projeto (inclui `rh_candidatos_limpo.csv` gerado pelo pipeline)
 
 ---
 
