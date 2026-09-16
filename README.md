@@ -40,6 +40,28 @@ Este projeto busca identificar padrões e variáveis associadas à saída de fun
 
 ---
 
+## 📉 Resultados em gráficos
+
+Gerados por `python -m src.gerar_figuras` a partir de `dataset/aug_train.csv`.
+
+**Nenhuma variável categórica é forte preditora.** A mais informativa, matrícula universitária, fica na faixa de poder preditivo médio (IV 0,119); gênero, área de formação e tipo de empresa estão abaixo de 0,02.
+
+![Information Value por variável](img/iv_por_variavel.png)
+
+**O que a variável de maior IV mostra.** Candidatos em curso integral procuram trocar de emprego com mais frequência (38,1%) do que os não matriculados (21,1%).
+
+![Taxa de procura por novo emprego por matrícula universitária](img/taxa_por_matricula.png)
+
+**Entre as numéricas, associações fracas com o alvo.** A mais forte é o índice de desenvolvimento da cidade (Spearman −0,28): candidatos de cidades menos desenvolvidas procuram mais trocar de emprego. Horas de treinamento não têm relação com o alvo.
+
+![Correlação de Spearman](img/correlacao_spearman.png)
+
+**Alvo desbalanceado.** 24,9% procuram trocar de emprego — relevante para qualquer modelo preditivo futuro.
+
+![Balanceamento da variável alvo](img/balanceamento_target.png)
+
+---
+
 ## 🛠️ Tecnologias utilizadas
 
 * Python
@@ -111,6 +133,7 @@ Os resultados desta análise podem auxiliar equipes de RH a:
 * `ProjetoRH_v2.ipynb` → notebook principal (v2), usa os módulos de `src/`
 * `src/etl.py` → pipeline de ETL em funções reutilizáveis (carga, imputação por regras de negócio, gravação)
 * `src/eda.py` → funções de análise exploratória (plots, normalidade, Spearman, WOE/IV)
+* `src/gerar_figuras.py` → gera os gráficos do README em `img/` (`python -m src.gerar_figuras`)
 * `src/exportar_bi.py` → exporta CSVs prontos para o dashboard de BI (`python -m src.exportar_bi`)
 * `dataset/bi/` → CSVs de apoio ao BI: tabela fato, taxa de evasão por categoria, WOE/IV e correlação
 * `ProjetoRH.ipynb` → notebook da v1 (mantido para referência)
