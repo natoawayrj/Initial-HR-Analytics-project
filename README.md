@@ -19,6 +19,27 @@ Este projeto busca identificar padrões e variáveis associadas à saída de fun
 
 ---
 
+## 📦 Dados
+
+* **Fonte:** [HR Analytics: Job Change of Data Scientists](https://www.kaggle.com/arashnic/hr-analytics-job-change-of-data-scientists) — Kaggle, publicado pelo usuário `arashnic`. Licença e termos de uso na página do dataset.
+* **Contexto:** uma consultoria de Data Science oferece cursos e quer saber quais participantes pretendem trocar de emprego após o treinamento.
+* **Período:** não informado pela fonte (base transversal, sem data de coleta).
+* **Granularidade:** 1 linha = 1 candidato inscrito no treinamento (`enrollee_id` único, sem duplicidades).
+* **Volume:**
+  * `aug_train.csv` — 19.158 linhas × 14 colunas (usado na análise)
+  * `aug_test.csv` — 2.129 linhas × 13 colunas, **sem** `target` (não usado)
+  * `rh_candidatos_limpo.csv` — 19.093 linhas × 8 colunas, após o ETL (65 linhas removidas por `experience` ausente)
+* **Variável alvo:** `target` = 1 se o candidato **está procurando trocar de emprego** (24,9%), 0 caso contrário (75,1%). Dicionário completo em `Features.txt`.
+* **Limitações conhecidas:**
+  * O `target` mede **intenção declarada de mudar de emprego**, não desligamento efetivo. "Turnover" neste projeto é uma aproximação: a análise não observa ninguém saindo de fato.
+  * Os candidatos são participantes de um treinamento de uma única empresa — não representam a força de trabalho em geral, nem funcionários de uma empresa específica.
+  * Muitos ausentes nas variáveis de empresa: `company_type` (32%), `company_size` (31%) e `gender` (23,5%). As imputações por regra de negócio (`src/etl.py`) criam categorias como `Other`, que misturam casos diferentes.
+  * `city` é um código anonimizado e `city_development_index` vem escalonado, sem documentação da métrica original.
+  * O sinal é fraco: a variável categórica mais informativa (`enrolled_university`) tem IV 0,119, na faixa de poder preditivo médio, e a numérica mais associada ao alvo (`city_development_index`) tem Spearman −0,28. Nenhuma variável isolada explica a intenção de saída.
+  * Análise de associação: nenhum resultado aqui estabelece causalidade.
+
+---
+
 ## 🛠️ Tecnologias utilizadas
 
 * Python
