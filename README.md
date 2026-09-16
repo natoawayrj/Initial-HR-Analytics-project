@@ -2,6 +2,8 @@
 
 > ✅ Versão atual: **v2** — código refatorado em módulos reutilizáveis, com pipeline de ETL separado da análise. O notebook da v1 foi mantido para referência histórica.
 
+> 📦 **Dados:** [HR Analytics: Job Change of Data Scientists](https://www.kaggle.com/arashnic/hr-analytics-job-change-of-data-scientists) (Kaggle, dataset público). Detalhes na seção [Dados](#-dados).
+
 ---
 
 ## 🎯 Objetivo
