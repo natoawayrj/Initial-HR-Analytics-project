@@ -105,6 +105,20 @@ AVERAGEX(
 )
 ```
 
+### Medidas de rótulo (pasta "Labels (en-US)")
+
+O Power BI Desktop formata números conforme a configuração regional do Windows (pt-BR mostra 19.093 e 24,9%).
+Como o relatório é em inglês, cartões, matriz e tabela usam medidas de texto com formato fixo en-US:
+
+```DAX
+Total Candidates Label = VAR v = [Total Candidates] RETURN IF(ISBLANK(v), BLANK(), FORMAT(v, "#,0", "en-US"))
+Intent Rate Label = VAR v = [Job Change Intent Rate] RETURN IF(ISBLANK(v), BLANK(), FORMAT(v, "0.0%", "en-US"))
+```
+
+Mesmo padrão para Seeking Change, Relevant Experience, Avg City Dev Index e Avg Experience.
+O `IF(ISBLANK(...))` evita linhas vazias na tabela. A cor da matriz continua calculada pela medida numérica
+(Job Change Intent Rate). O modelo também foi recriado com idioma en-US.
+
 ### Colunas calculadas
 
 ```dax
