@@ -1,29 +1,24 @@
-Features
+Column dictionary – aug_train.csv (Kaggle: HR Analytics: Job Change of Data Scientists)
 
-enrollee_id : Unique ID for candidate
+enrollee_id            : Unique ID for candidate
+city                   : City code
+city_development_index : Development index of the city (scaled)
+gender                 : Gender of candidate
+relevent_experience    : Relevant experience of candidate
+enrolled_university    : Type of university course enrolled, if any
+education_level        : Education level of candidate
+major_discipline       : Education major discipline of candidate
+experience             : Candidate total experience in years
+company_size           : Number of employees in current employer's company
+company_type           : Type of current employer
+last_new_job           : Difference in years between previous job and current job
+training_hours         : Training hours completed
+target                 : 0 = not looking for a job change, 1 = looking for a job change (declared intent)
 
-city: City code
+Columns kept in dataset/processed/hr_analytics_tratado.csv:
+city_development_index, experience, enrolled_university, relevent_experience,
+education_level, company_type, major_discipline, target
 
-city_ development _index : Developement index of the city (scaled)
-
-gender: Gender of candidate
-
-relevent_experience: Relevant experience of candidate
-
-enrolled_university: Type of University course enrolled if any
-
-education_level: Education level of candidate
-
-major_discipline :Education major discipline of candidate
-
-experience: Candidate total experience in years
-
-company_size: No of employees in current employer's company
-
-company_type : Type of current employer
-
-lastnewjob: Difference in years between previous job and current job
-
-training_hours: training hours completed
-
-target: 0 – Not looking for job change, 1 – Looking for a job change
+In the Power BI model some columns are renamed for display (the CSV keeps the original names):
+enrolled_university -> University Enrollment, relevent_experience -> Relevant Experience,
+education_level -> Education Level, company_type -> Company Type, major_discipline -> Major Discipline
