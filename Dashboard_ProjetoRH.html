@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard RH – Análise de Candidatos Data Science</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222639;
+    --border: #2d3150;
+    --accent1: #6366f1;
+    --accent2: #22d3ee;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --tab-active: #6366f1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #0f1117 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+  .header-left p  { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+  .header-badge { background: var(--accent1); color: #fff; font-size: 0.72rem; font-weight: 600;
+                  padding: 4px 10px; border-radius: 20px; letter-spacing: 0.05em; }
+
+  /* KPI STRIP */
+  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 24px 32px 0; }
+  .kpi-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 22px; display: flex; flex-direction: column; gap: 6px;
+    position: relative; overflow: hidden;
+  }
+  .kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: var(--accent-color, var(--accent1)); }
+  .kpi-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+  .kpi-value { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; }
+  .kpi-sub   { font-size: 0.78rem; color: var(--text-muted); }
+
+  /* TABS */
+  .tabs-bar { display: flex; gap: 4px; padding: 20px 32px 0; border-bottom: 1px solid var(--border); margin: 0 0 0 0; }
+  .tab-btn {
+    padding: 10px 22px; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer;
+    background: transparent; color: var(--text-muted); border-bottom: 2px solid transparent;
+    transition: all 0.2s; border-radius: 6px 6px 0 0;
+  }
+  .tab-btn:hover  { color: var(--text); background: var(--surface2); }
+  .tab-btn.active { color: #fff; border-bottom-color: var(--tab-active); background: var(--surface2); }
+
+  /* TAB CONTENT */
+  .tab-panel { display: none; padding: 24px 32px 32px; }
+  .tab-panel.active { display: block; }
+
+  /* GRIDS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-12 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+  .grid-21 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+
+  /* CHART CARD */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .card-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase;
+                letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 16px; }
+  .card-title span { font-size: 0.7rem; font-weight: 400; color: #64748b; margin-left: 6px; }
+  .chart-wrap { position: relative; }
+  .chart-wrap canvas { max-width: 100%; }
+
+  /* INSIGHT BOX */
+  .insight {
+    background: var(--surface2); border-left: 3px solid var(--accent1);
+    border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 0.82rem;
+    color: var(--text-muted); margin-top: 14px; line-height: 1.6;
+  }
+  .insight strong { color: var(--text); }
+
+  /* RECOMMENDATIONS */
+  .rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .rec-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .rec-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .rec-card p  { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+  .badge-r { display:inline-block; font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:20px; }
+
+  .iv-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .iv-bar-label { font-size: 0.8rem; width: 160px; color: var(--text-muted); }
+  .iv-bar-track { flex: 1; background: var(--surface2); border-radius: 4px; height: 10px; overflow:hidden; }
+  .iv-bar-fill  { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .iv-bar-val   { font-size: 0.8rem; font-weight: 700; width: 44px; text-align: right; }
+
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-right: 4px; }
+
+  /* FOOTER */
+  .footer { text-align: center; padding: 20px; color: #334155; font-size: 0.75rem; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>🎯 Dashboard RH — Análise de Candidatos a Cientistas de Dados</h1>
+    <p>Fonte: Kaggle HR Analytics · Dataset: aug_train.csv · 19.095 registros limpos</p>
+  </div>
+  <div class="header-badge">BI ANALYTICS</div>
+</div>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div class="kpi-card" style="--accent-color:#6366f1">
+    <div class="kpi-label">Total de Candidatos</div>
+    <div class="kpi-value">19.095</div>
+    <div class="kpi-sub">registros após limpeza</div>
+  </div>
+  <div class="kpi-card" style="--accent-color:#ef4444">
+    <div class="kpi-label">Buscando Novo Emprego</div>
+    <div class="kpi-value">24,9%</div>
+    <div class="kpi-sub">4.755 candidatos (target = 1)</div>
+  </div>
+  <div class="kpi-card" style="--accent-color:#22d3ee">
+    <div class="kpi-label">CDI Médio</div>
+    <div class="kpi-value">0,829</div>
+    <div class="kpi-sub">Índice de Desenvolvimento da Cidade</div>
+  </div>
+  <div class="kpi-card" style="--accent-color:#10b981">
+    <div class="kpi-label">Preditor Mais Forte</div>
+    <div class="kpi-value">enrolled_university</div>
+    <div class="kpi-sub" style="font-size:0.72rem">IV = 0.119 · preditor médio</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('visao')">📊 Visão Geral</button>
+  <button class="tab-btn" onclick="switchTab('perfil')">👤 Perfil dos Candidatos</button>
+  <button class="tab-btn" onclick="switchTab('fatores')">🔍 Fatores de Decisão</button>
+  <button class="tab-btn" onclick="switchTab('rec')">💡 Recomendações</button>
+</div>
+
+<!-- ===== TAB 1: VISÃO GERAL ===== -->
+<div id="tab-visao" class="tab-panel active">
+  <div class="grid-12" style="margin-bottom:20px">
+
+    <div class="card">
+      <div class="card-title">Distribuição do Target <span>proporção de intenção de mudança</span></div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartDonut"></canvas>
+      </div>
+      <div class="insight">
+        Os dados são <strong>desbalanceados</strong>: 75,1% dos candidatos <strong>não buscam emprego</strong> após o treinamento.
+        Apenas 24,9% têm intenção de mudar. Isso é importante para modelos preditivos — pode-se usar técnicas de balanceamento (SMOTE, pesos de classe).
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Information Value (IV) das Variáveis Categóricas <span>poder preditivo em relação ao target</span></div>
+      <div style="margin-top:10px">
+        <div class="iv-bar">
+          <div class="iv-bar-label">enrolled_university</div>
+          <div class="iv-bar-track"><div class="iv-bar-fill" style="width:100%;background:#6366f1"></div></div>
+          <div class="iv-bar-val" style="color:#6366f1">0.119</div>
+        </div>
+        <div class="iv-bar">
+          <div class="iv-bar-label">relevent_experience</div>
+          <div class="iv-bar-track"><div class="iv-bar-fill" style="width:70.6%;background:#22d3ee"></div></div>
+          <div class="iv-bar-val" style="color:#22d3ee">0.084</div>
+        </div>
+        <div class="iv-bar">
+          <div class="iv-bar-label">education_level</div>
+          <div class="iv-bar-track"><div class="iv-bar-fill" style="width:42.9%;background:#10b981"></div></div>
+          <div class="iv-bar-val" style="color:#10b981">0.051</div>
+        </div>
+        <div class="iv-bar">
+          <div class="iv-bar-label">company_type</div>
+          <div class="iv-bar-track"><div class="iv-bar-fill" style="width:15.1%;background:#f59e0b"></div></div>
+          <div class="iv-bar-val" style="color:#f59e0b">0.018</div>
+        </div>
+        <div class="iv-bar">
+          <div class="iv-bar-label">major_discipline</div>
+          <div class="iv-bar-track"><div class="iv-bar-fill" style="width:3.4%;background:#94a3b8"></div></div>
+          <div class="iv-bar-val" style="color:#94a3b8">0.004</div>
+        </div>
+        <div class="iv-bar">
+          <div class="iv-bar-label">gender</div>
+          <div class="iv-bar-track"><div class="iv-bar-fill" style="width:2.5%;background:#64748b"></div></div>
+          <div class="iv-bar-val" style="color:#64748b">0.003</div>
+        </div>
+      </div>
+      <div style="margin-top:18px; display:flex; gap:8px; flex-wrap:wrap">
+        <span class="tag" style="background:#1e3a5f;color:#22d3ee">IV &gt; 0.1 → Preditor Médio</span>
+        <span class="tag" style="background:#1e3a2f;color:#10b981">IV 0.02–0.1 → Preditor Fraco</span>
+        <span class="tag" style="background:#2d2d2d;color:#94a3b8">IV &lt; 0.02 → Inútil</span>
+      </div>
+      <div class="insight">
+        <strong>enrolled_university</strong> é o preditor categórico mais forte (IV=0.119). Candidatos em cursos de tempo integral têm <strong>2× mais chance</strong> de buscar emprego. <strong>Gender</strong> e <strong>major_discipline</strong> são irrelevantes para a previsão.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Correlação de Spearman com o Target <span>variáveis numéricas</span></div>
+    <div class="chart-wrap" style="height:180px">
+      <canvas id="chartCorr"></canvas>
+    </div>
+    <div class="insight">
+      <strong>city_development_index</strong> tem a correlação mais forte com o target (−0.279): candidatos de cidades <em>menos</em> desenvolvidas tendem mais a buscar emprego. <strong>training_hours</strong> tem correlação próxima de zero — não é um bom preditor.
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 2: PERFIL ===== -->
+<div id="tab-perfil" class="tab-panel">
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">Nível de Educação por Target</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartEdu"></canvas></div>
+      <div class="insight">
+        Candidatos com <strong>Graduate</strong> representam a maior fatia em ambas as classes, mas Graduate também concentra mais candidatos que <em>buscam emprego</em> em termos absolutos. Doutorandos raramente querem mudar de emprego.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Matrícula em Universidade por Target</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartEnroll"></canvas></div>
+      <div class="insight">
+        Candidatos em <strong>Full time course</strong> têm taxa de mudança de ~38% — bem acima da média de 24,9%. Este é o preditor categórico mais forte do dataset (IV=0.119).
+      </div>
+    </div>
+  </div>
+  <div class="grid-21">
+    <div class="card">
+      <div class="card-title">Experiência Relevante por Target</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="chartRelev"></canvas></div>
+      <div class="insight">
+        Quem <strong>não tem experiência relevante</strong> busca mais emprego (34% vs 21%). Candidatos sem experiência enxergam o treinamento como porta de entrada.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Especialização (Major)</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="chartMaj"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 3: FATORES ===== -->
+<div id="tab-fatores" class="tab-panel">
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Índice de Desenvolvimento da Cidade (CDI) por Target <span>correlação: −0.279 com target</span></div>
+    <div class="chart-wrap" style="height:280px"><canvas id="chartCDI"></canvas></div>
+    <div class="insight">
+      Candidatos de <strong>cidades menos desenvolvidas (CDI 0.4–0.7)</strong> têm altíssima taxa de busca por emprego — chegando a mais de 50% na faixa 0.4–0.6. Já em cidades muito desenvolvidas (CDI 0.90–0.95), a taxa cai para ~17%. O CDI é o preditor numérico mais forte.
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Tipo de Empresa por Target</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartComp"></canvas></div>
+      <div class="insight">
+        Candidatos da categoria <strong>Other</strong> (empresas sem classificação) têm a maior proporção de busca por emprego (~38%). Candidatos de <strong>Pvt Ltd</strong> são os mais estáveis (18% buscam emprego).
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Taxa de Busca por Emprego por Grupo <span>% do grupo que busca emprego</span></div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chartRate"></canvas></div>
+      <div class="insight">
+        Visualização da taxa de conversão dentro de cada grupo chave. Candidatos em <strong>Full time</strong> e de cidades de <strong>baixo CDI</strong> são os segmentos com maior probabilidade de aceitar uma oferta de emprego.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 4: RECOMENDAÇÕES ===== -->
+<div id="tab-rec" class="tab-panel">
+  <div style="margin-bottom:20px">
+    <div class="card" style="border-left:3px solid var(--accent1)">
+      <div class="card-title">Resumo Executivo para Stakeholders</div>
+      <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.8">
+        A análise de 19.095 candidatos ao programa de treinamento de Data Science revela que <strong style="color:#fff">apenas 24,9% têm real intenção de trabalhar na empresa</strong> após o treinamento. O dataset é desbalanceado, o que exige atenção especial no desenvolvimento de modelos preditivos. As variáveis mais relevantes identificadas foram: <em>matrícula universitária, experiência relevante, nível educacional e índice de desenvolvimento da cidade</em>.
+      </p>
+    </div>
+  </div>
+  <div class="rec-grid">
+    <div class="rec-card">
+      <h3 style="color:#6366f1">🎯 <span>Segmentação Inteligente de Candidatos</span></h3>
+      <p>Priorizar candidatos com <strong style="color:#e2e8f0">baixo CDI</strong> (cidades menos desenvolvidas), <strong style="color:#e2e8f0">sem experiência relevante</strong> e em cursos universitários de <strong style="color:#e2e8f0">tempo integral</strong>. Este perfil apresenta taxa de intenção de emprego quase <em>2× acima da média</em>.</p>
+    </div>
+    <div class="rec-card">
+      <h3 style="color:#22d3ee">📋 <span>Melhoria na Coleta de Dados</span></h3>
+      <p>O dataset possui <strong style="color:#e2e8f0">alta taxa de valores ausentes</strong> em gender (23,5%), company_size (31%) e company_type (32%). O RH deve implementar formulários obrigatórios para capturar esses dados, o que aumentará o poder preditivo dos modelos futuros.</p>
+    </div>
+    <div class="rec-card">
+      <h3 style="color:#10b981">⚡ <span>Otimização do Treinamento</span></h3>
+      <p>As <strong style="color:#e2e8f0">horas de treinamento têm correlação próxima de zero</strong> com a decisão de emprego (r = −0.014). O RH pode tornar o treinamento <em>mais compacto e objetivo</em> sem impactar a taxa de conversão, reduzindo custos operacionais.</p>
+    </div>
+    <div class="rec-card">
+      <h3 style="color:#f59e0b">🤖 <span>Próximo Passo: Modelo Preditivo</span></h3>
+      <p>Com as variáveis selecionadas (<em>city_development_index, enrolled_university, relevent_experience, education_level, company_type</em>), é viável treinar um classificador (ex: <strong style="color:#e2e8f0">XGBoost ou Random Forest</strong>) para prever a intenção de cada novo candidato, automatizando o processo seletivo.</p>
+    </div>
+    <div class="rec-card">
+      <h3 style="color:#ec4899">🏢 <span>Foco no Tipo de Empresa</span></h3>
+      <p>Candidatos que vieram de <strong style="color:#e2e8f0">Early Stage Startups e Public Sector</strong> têm taxa de busca de emprego relativamente alta (~23–22%). Candidatos de <strong style="color:#e2e8f0">Pvt Ltd</strong> são mais estáveis e podem ser abordados com propostas diferenciadas de carreira.</p>
+    </div>
+    <div class="rec-card">
+      <h3 style="color:#a78bfa">📉 <span>Ignorar Variáveis Irrelevantes</span></h3>
+      <p>As variáveis <strong style="color:#e2e8f0">gender</strong> (IV=0.003) e <strong style="color:#e2e8f0">major_discipline</strong> (IV=0.004) são estatisticamente irrelevantes para prever a intenção de mudança. Eliminar essas variáveis dos modelos melhora eficiência e evita viés desnecessário.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Dashboard gerado via análise de dados do ProjetoRH.ipynb · Kaggle HR Analytics · abril 2026</div>
+
+<script>
+// ============ DADOS ============
+const D = {
+  total: 19095, looking: 4755, not_looking: 14340, pct_looking: 24.9, avg_cdi: 0.829,
+  target_labels: ["Não busca emprego (0)", "Busca novo emprego (1)"],
+  target_values: [14340, 4755],
+  edu_labels: ["Primary School","High School","Other","Graduate","Masters","Phd"],
+  edu_not: [267,1619,349,8336,3416,353],
+  edu_yes: [40,394,101,3230,932,58],
+  enr_labels: ["Full time course","No enrollment","Other","Part time course","Primary Grad"],
+  enr_not: [2316,10869,252,895,8],
+  enr_yes: [1422,2910,120,302,1],
+  rel_labels: ["Has relevent experience","No relevent experience"],
+  rel_not: [10804,3536],
+  rel_yes: [2946,1809],
+  comp_labels: ["Pvt Ltd","Other","Funded Startup","Public Sector","Early Stage Startup","NGO"],
+  comp_not: [8028,3827,859,743,460,423],
+  comp_yes: [1769,2399,140,210,141,96],
+  cdi_labels: ["0.4–0.6","0.6–0.7","0.7–0.8","0.8–0.85","0.85–0.90","0.90–0.95"],
+  cdi_not: [303,1913,1061,837,2226,8000],
+  cdi_yes: [418,1893,346,148,331,1619],
+  maj_labels: ["STEM","Non Degree","Humanities","Other","Business Degree","Arts","No Major"],
+  maj_values: [14451,2770,668,405,326,252,223]
+};
+
+const C1 = '#6366f1', C2 = '#ef4444', C3 = '#22d3ee', C4 = '#10b981', C5 = '#f59e0b';
+const gridColor = 'rgba(255,255,255,0.07)';
+const tickColor = '#64748b';
+
+Chart.defaults.color = tickColor;
+Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+Chart.defaults.font.size = 11;
+
+function mkChart(id, config) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  return new Chart(ctx, config);
+}
+
+// 1. DONUT – Target
+mkChart('chartDonut', {
+  type: 'doughnut',
+  data: {
+    labels: D.target_labels,
+    datasets: [{
+      data: D.target_values,
+      backgroundColor: [C4, C2],
+      borderColor: '#1a1d27',
+      borderWidth: 3,
+      hoverOffset: 10
+    }]
+  },
+  options: {
+    cutout: '68%',
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 16, boxWidth: 14 } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw.toLocaleString('pt-BR')} (${(ctx.raw/D.total*100).toFixed(1)}%)` } }
+    }
+  }
+});
+
+// 2. CORRELAÇÃO – Horizontal bar
+mkChart('chartCorr', {
+  type: 'bar',
+  data: {
+    labels: ['city_development_index','experience','last_new_job','training_hours'],
+    datasets: [{
+      label: 'Correlação de Spearman com Target',
+      data: [-0.279, -0.184, -0.082, -0.014],
+      backgroundColor: d => d.raw < -0.15 ? C2 : d.raw < -0.05 ? C5 : '#334155',
+      borderRadius: 4
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor },
+           min: -0.35, max: 0.05,
+           title: { display: true, text: 'Correlação (negativo = mais chance de buscar emprego)', color: tickColor } },
+      y: { grid: { display: false }, ticks: { color: '#e2e8f0', font: { size: 12 } } }
+    }
+  }
+});
+
+// 3. EDUCATION – stacked bar
+mkChart('chartEdu', {
+  type: 'bar',
+  data: {
+    labels: D.edu_labels,
+    datasets: [
+      { label: 'Não busca emprego', data: D.edu_not, backgroundColor: C4, borderRadius: 3 },
+      { label: 'Busca emprego', data: D.edu_yes, backgroundColor: C2, borderRadius: 3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom' } },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, grid: { color: gridColor } }
+    }
+  }
+});
+
+// 4. ENROLLED UNIVERSITY
+mkChart('chartEnroll', {
+  type: 'bar',
+  data: {
+    labels: D.enr_labels,
+    datasets: [
+      { label: 'Não busca emprego', data: D.enr_not, backgroundColor: C4, borderRadius: 3 },
+      { label: 'Busca emprego', data: D.enr_yes, backgroundColor: C2, borderRadius: 3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom' } },
+    scales: {
+      x: { stacked: true, grid: { display: false }, ticks: { maxRotation: 15 } },
+      y: { stacked: true, grid: { color: gridColor } }
+    }
+  }
+});
+
+// 5. RELEVANT EXPERIENCE
+mkChart('chartRelev', {
+  type: 'bar',
+  data: {
+    labels: D.rel_labels,
+    datasets: [
+      { label: 'Não busca emprego', data: D.rel_not, backgroundColor: C4, borderRadius: 4 },
+      { label: 'Busca emprego', data: D.rel_yes, backgroundColor: C2, borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom' } },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, grid: { color: gridColor } }
+    }
+  }
+});
+
+// 6. MAJOR DISCIPLINE – donut
+mkChart('chartMaj', {
+  type: 'doughnut',
+  data: {
+    labels: D.maj_labels,
+    datasets: [{
+      data: D.maj_values,
+      backgroundColor: [C1,'#8b5cf6',C3,C5,C4,'#ec4899','#64748b'],
+      borderColor: '#1a1d27', borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '55%',
+    plugins: { legend: { position: 'bottom', labels: { padding: 10, boxWidth: 12, font: { size: 10 } } } }
+  }
+});
+
+// 7. CDI
+mkChart('chartCDI', {
+  type: 'bar',
+  data: {
+    labels: D.cdi_labels,
+    datasets: [
+      { label: 'Não busca emprego', data: D.cdi_not, backgroundColor: C4, borderRadius: 3 },
+      { label: 'Busca emprego', data: D.cdi_yes, backgroundColor: C2, borderRadius: 3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      x: { stacked: true, grid: { display: false },
+           title: { display: true, text: 'Faixa de CDI (Índice de Desenvolvimento da Cidade)', color: tickColor } },
+      y: { stacked: true, grid: { color: gridColor } }
+    }
+  }
+});
+
+// 8. COMPANY TYPE
+mkChart('chartComp', {
+  type: 'bar',
+  data: {
+    labels: D.comp_labels,
+    datasets: [
+      { label: 'Não busca emprego', data: D.comp_not, backgroundColor: C4, borderRadius: 3 },
+      { label: 'Busca emprego', data: D.comp_yes, backgroundColor: C2, borderRadius: 3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom' } },
+    scales: {
+      x: { stacked: true, grid: { display: false }, ticks: { maxRotation: 20 } },
+      y: { stacked: true, grid: { color: gridColor } }
+    }
+  }
+});
+
+// 9. TAXA por grupo
+const rateLabels = ['Full time course','Low CDI (0.4-0.6)','No rel. exp.','High School','Pvt Ltd','No enrollment'];
+const rateValues = [38.0, 58.0, 33.8, 19.6, 18.1, 21.1];
+const rateColors = rateValues.map(v => v > 35 ? C2 : v > 25 ? C5 : C4);
+
+mkChart('chartRate', {
+  type: 'bar',
+  data: {
+    labels: rateLabels,
+    datasets: [{
+      label: '% que busca emprego',
+      data: rateValues,
+      backgroundColor: rateColors,
+      borderRadius: 5
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+               tooltip: { callbacks: { label: ctx => ` ${ctx.raw.toFixed(1)}% buscam emprego` } } },
+    scales: {
+      x: { grid: { color: gridColor }, min: 0, max: 70,
+           title: { display: true, text: '% do grupo com target = 1', color: tickColor } },
+      y: { grid: { display: false }, ticks: { color: '#e2e8f0' } }
+    }
+  }
+});
+
+// TAB SWITCH
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>

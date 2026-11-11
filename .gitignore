@@ -1,6 +1,8 @@
 .ipynb_checkpoints/
 .venv/
 .claude/
+__pycache__/
+*.pyc
 
 # Arquivos de trabalho (não publicar)
 context.md
