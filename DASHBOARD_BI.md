@@ -132,13 +132,21 @@ SWITCH(
 
 ### Páginas
 
-**Página 1 – visão geral**
+**Layout comum**
+- Fundo em imagem (`hr_bg_overview.png` / `hr_bg_detail.png`, recursos registrados no .pbix): cabeçalho escuro com título,
+  subtítulo da base (19.093 candidatos, target = intenção declarada, Kaggle) e molduras brancas atrás de cada visual
+- Botões transparentes sobre as pílulas Overview / Detail fazem a navegação entre páginas (Ctrl+clique no Desktop)
+
+**Overview**
 - Cards: Total Candidates, Intent Rate, Seeking Change, Relevant Experience
-- Filtros: Education Level, Company Type
+- Painel Filters: Education Level, Company Type
 - Barras: Intent Rate por Company Type (subtítulo: "Other" é quase todo "não informado", 6.104 de 6.225),
   Relevant Experience, Education Level e Experience Range; colunas por City Development Band
 - Linha tracejada em cada gráfico: taxa geral (24,9%)
+- Painel Key findings (texto fixo, base completa; não muda com os filtros)
 
-**Detalhamento**
+**Detail**
+- Cards: Total Candidates, Intent Rate, Seeking Change, Avg City Development Index, Avg Experience (yrs)
 - Matriz Education Level × Company Type colorida pela Job Change Intent Rate
-- Tabela Experience Range × University Enrollment × Relevant Experience com Total Candidates e taxa
+- Tabela Experience Range × University Enrollment × Relevant Experience com Candidates e Intent Rate
+- Painel "How to read this page" (como ler matriz e tabela, cuidado com grupos pequenos)
